@@ -11,7 +11,6 @@ st.write("ارفع صورة أي فاكهة أو خضار والتطبيق هي�
 
 @st.cache_resource
 def load_model():
-    # تحميل نموذج MobileNetV2 جاهز ومتدرب على ملايين الصور
     model = MobileNetV2(weights='imagenet')
     return model
 
@@ -24,7 +23,6 @@ st.markdown("---")
 uploaded_file = st.file_uploader("اختر صورة فاكهة للتنبؤ بها", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
-    # قراءة الصورة
     image = Image.open(uploaded_file)
     
     col1, col2 = st.columns(2)
@@ -32,13 +30,11 @@ if uploaded_file is not None:
         st.image(image, caption="الصورة المرفوعة", use_container_width=True)
     
     with col2:
-        # تجهيز الصورة للنموذج
         img_array = np.array(image.convert('RGB'))
         img_resized = cv2.resize(img_array, (224, 224))
         img_preprocessed = preprocess_input(img_resized)
         img_expanded = np.expand_dims(img_preprocessed, axis=0)
         
-        # التنبؤ
         predictions = model.predict(img_expanded)
         results = decode_predictions(predictions, top=3)[0]
         
